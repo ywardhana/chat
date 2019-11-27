@@ -1,0 +1,29 @@
+#!/bin/bash
+
+OUTFILE=$1
+PACKAGES=$(go list ./... | grep -Ev "mocks|model")
+EXITCODE=0
+
+echo "mode: atomic" > "$OUTFILE"
+
+for PACKAGE in $PACKAGES; do
+    # Exclude some packages
+    if [ "$PACKAGE" == "github.com/ywardhana/chat/app" ]; then
+        continue
+    fi
+
+    echo "$PACKAGE"
+
+    APP_ENV="test" go test -v -coverprofile=profile.out -covermode=atomic "$PACKAGE"
+    __EXITCODE__=$?
+
+    if [ "$__EXITCODE__" -ne "0" ]; then
+        EXITCODE=$__EXITCODE__
+    fi
+
+    if [ -f profile.out ]; then
+        tail -n +2 profile.out >> "$OUTFILE"; rm profile.out
+    fi
+done
+
+exit $EXITCODE
