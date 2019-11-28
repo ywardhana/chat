@@ -21,7 +21,7 @@ type Ready struct {
 	mutex  sync.Mutex
 }
 
-func BuildServer(ready *Ready, middleware *middleware.Middleware, handlers ...Handler) http.Handler {
+func BuildServer(middleware *middleware.Middleware, handlers ...Handler) http.Handler {
 	router := httprouter.New()
 
 	for _, reg := range handlers {
@@ -34,5 +34,8 @@ func BuildServer(ready *Ready, middleware *middleware.Middleware, handlers ...Ha
 }
 
 func notFound(w http.ResponseWriter, _ *http.Request) {
-	response.Error(w, errormessage.ErrNotFound, 404)
+	meta := response.MetaInfo{
+		HttpStatus: 404,
+	}
+	response.OKWithMeta(w, nil, errormessage.ErrNotFound.Error(), meta)
 }
