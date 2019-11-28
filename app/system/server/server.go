@@ -8,6 +8,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ywardhana/chat/app/system/middleware"
+	"github.com/ywardhana/chat/errormessage"
 )
 
 type Handler interface {
@@ -33,7 +34,5 @@ func BuildServer(ready *Ready, middleware *middleware.Middleware, handlers ...Ha
 }
 
 func notFound(w http.ResponseWriter, _ *http.Request) {
-	meta := response.MetaInfo{HttpStatus: 404}
-
-	response.OKWithMeta(w, nil, "not found", meta)
+	response.Error(w, errormessage.ErrNotFound, 404)
 }
