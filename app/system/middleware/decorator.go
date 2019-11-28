@@ -37,21 +37,29 @@ func (d *Decorator) ApplyDecorator(handler HandleWithError, auth Auth) httproute
 		if err != nil {
 			d.failedHandler.ServeHTTP(w, r)
 		}
+		d.successHandler.ServeHTTP(w, r)
 	}
 }
 
 func HandleFailedAuth(w http.ResponseWriter, r *http.Request) {
-	response.Error(w, errormessage.ErrorFailedAuth, 401)
+	meta := response.MetaInfo{
+		HttpStatus: 401,
+	}
+	response.OKWithMeta(w, nil, errormessage.ErrorFailedAuth.Error(), meta)
 	log.Println(r.URL.Query())
 	log.Output(1, errormessage.ErrorFailedAuth.Error()+"\n")
 }
 
 func HandlePassed(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.URL.Query())
+	log.Println(r.URL.RequestURI())
 	r.Context().Done()
 }
 
 func HandleFailed(w http.ResponseWriter, r *http.Request) {
-	response.Error(w, errormessage.ErrorFailedAuth, 422)
+	meta := response.MetaInfo{
+		HttpStatus: 422,
+	}
+	response.OKWithMeta(w, nil, errormessage.ErrorUnexpected.Error(), meta)
 	log.Println(r.URL.Query())
 }
