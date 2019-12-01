@@ -8,7 +8,7 @@ import (
 
 func (uc *ChatUsecase) IndexChat(param chat.ChatIndexParam) ([]*model.Chat, error) {
 	return uc.repository.Get(repository.ChatRepoConfig{
-		Limit:  param.Limit,
-		Offset: param.Offset,
+		Limit:  param.Limit(),
+		Offset: param.Offset(),
 	})
 }
