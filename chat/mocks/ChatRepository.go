@@ -12,7 +12,7 @@ type ChatRepository struct {
 }
 
 // Get provides a mock function with given fields: config
-func (_m *ChatRepository) Get(config repository.ChatRepoConfig) []*model.Chat {
+func (_m *ChatRepository) Get(config repository.ChatRepoConfig) ([]*model.Chat, error) {
 	ret := _m.Called(config)
 
 	var r0 []*model.Chat
@@ -24,7 +24,14 @@ func (_m *ChatRepository) Get(config repository.ChatRepoConfig) []*model.Chat {
 		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(repository.ChatRepoConfig) error); ok {
+		r1 = rf(config)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // GetNewest provides a mock function with given fields:
