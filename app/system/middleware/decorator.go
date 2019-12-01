@@ -42,10 +42,7 @@ func (d *Decorator) ApplyDecorator(handler HandleWithError, auth Auth) httproute
 }
 
 func HandleFailedAuth(w http.ResponseWriter, r *http.Request) {
-	meta := response.MetaInfo{
-		HttpStatus: 401,
-	}
-	response.OKWithMeta(w, nil, errormessage.ErrorFailedAuth.Error(), meta)
+	response.Error(w, errormessage.ErrorFailedAuth, http.StatusUnauthorized)
 	log.Println(r.URL.Query())
 	log.Output(1, errormessage.ErrorFailedAuth.Error()+"\n")
 }
@@ -57,9 +54,6 @@ func HandlePassed(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleFailed(w http.ResponseWriter, r *http.Request) {
-	meta := response.MetaInfo{
-		HttpStatus: 422,
-	}
-	response.OKWithMeta(w, nil, errormessage.ErrorUnexpected.Error(), meta)
+	response.Error(w, errormessage.ErrorUnexpected, http.StatusUnprocessableEntity)
 	log.Println(r.URL.Query())
 }

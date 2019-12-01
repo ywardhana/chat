@@ -4,11 +4,8 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/ywardhana/goapi/response"
-
 	"github.com/julienschmidt/httprouter"
 	"github.com/ywardhana/chat/app/system/middleware"
-	"github.com/ywardhana/chat/errormessage"
 )
 
 type Handler interface {
@@ -33,9 +30,7 @@ func BuildServer(middleware *middleware.Middleware, handlers ...Handler) http.Ha
 	return router
 }
 
-func notFound(w http.ResponseWriter, _ *http.Request) {
-	meta := response.MetaInfo{
-		HttpStatus: 404,
-	}
-	response.OKWithMeta(w, nil, errormessage.ErrNotFound.Error(), meta)
+func notFound(w http.ResponseWriter, r *http.Request) {
+	http.NotFound(w, r)
+
 }
