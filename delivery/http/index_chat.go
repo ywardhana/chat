@@ -1,7 +1,6 @@
 package http
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -19,7 +18,7 @@ func (h *ChatHandler) IndexChat(w http.ResponseWriter, r *http.Request, param ht
 		return err
 	}
 	total := h.usecase.CountChat()
-	log.Println(chatParam.Offset())
+
 	meta := response.MetaInfo{
 		Limit:  chatParam.Limit(),
 		Offset: chatParam.Offset(),
