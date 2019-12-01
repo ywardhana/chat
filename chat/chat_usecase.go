@@ -9,7 +9,7 @@ type ChatUsecase interface {
 	IndexChat(param ChatIndexParam) ([]*model.Chat, error)
 }
 
-type ChatIndexParam struct {
-	Offset int
-	Limit  int
+type ChatIndexParam interface {
+	Limit() int
+	Offset() int
 }
