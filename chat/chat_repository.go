@@ -8,5 +8,5 @@ import (
 type ChatRepository interface {
 	Insert(chat *model.Chat) *repository.Chat
 	GetNewest() *model.Chat
-	Get(config ChatRepoConfig) []*model.Chat
+	Get(config repository.ChatRepoConfig) []*model.Chat
 }
