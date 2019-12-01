@@ -10,7 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/ywardhana/chat/app/system/middleware"
 	"github.com/ywardhana/chat/app/system/server"
 	chatHTTP "github.com/ywardhana/chat/delivery/http"
@@ -22,7 +21,6 @@ func main() {
 	chat := resolveChat()
 	startServer(
 		chat,
-		// other handler goes here
 	)
 }
 
@@ -69,15 +67,4 @@ func startServer(handlers ...server.Handler) {
 	}
 
 	log.Println("chat app is gracefully stopped")
-}
-
-type TestHandler struct {
-}
-
-func (h *TestHandler) Register(router *httprouter.Router, m *middleware.Middleware) {
-	router.GET("/coba", m.AuthBasic(h.TestFunc))
-}
-
-func (h *TestHandler) TestFunc(w http.ResponseWriter, r *http.Request, param httprouter.Params) error {
-	return nil
 }
