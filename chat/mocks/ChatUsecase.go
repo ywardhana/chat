@@ -2,6 +2,7 @@
 
 package mocks
 
+import chat "github.com/ywardhana/chat/chat"
 import mock "github.com/stretchr/testify/mock"
 import model "github.com/ywardhana/chat/model"
 
@@ -24,4 +25,27 @@ func (_m *ChatUsecase) CreateChat(message string) *model.Chat {
 	}
 
 	return r0
+}
+
+// IndexChat provides a mock function with given fields: param
+func (_m *ChatUsecase) IndexChat(param chat.ChatIndexParam) ([]*model.Chat, error) {
+	ret := _m.Called(param)
+
+	var r0 []*model.Chat
+	if rf, ok := ret.Get(0).(func(chat.ChatIndexParam) []*model.Chat); ok {
+		r0 = rf(param)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.Chat)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(chat.ChatIndexParam) error); ok {
+		r1 = rf(param)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
