@@ -13,14 +13,24 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/ywardhana/chat/app/system/middleware"
 	"github.com/ywardhana/chat/app/system/server"
+	chatHTTP "github.com/ywardhana/chat/delivery/http"
+	"github.com/ywardhana/chat/repository"
+	"github.com/ywardhana/chat/usecase"
 )
 
 func main() {
-	handl := &TestHandler{}
+	chat := resolveChat()
 	startServer(
-		handl,
+		chat,
 		// other handler goes here
 	)
+}
+
+func resolveChat() server.Handler {
+	chatRepository := repository.NewChatRepository()
+	chatUsecase := usecase.NewChatUsecase(chatRepository)
+	return chatHTTP.NewChatHandler(chatUsecase)
+
 }
 
 func startServer(handlers ...server.Handler) {
