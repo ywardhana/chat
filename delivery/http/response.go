@@ -15,3 +15,11 @@ func serializerChat(chat *model.Chat) ChatResponse {
 		CreatedAt: chat.GetTime(),
 	}
 }
+
+func serializerListChat(chats []*model.Chat) (response []ChatResponse) {
+	response = make([]ChatResponse, len(chats))
+	for index, chat := range chats {
+		response[index] = serializerChat(chat)
+	}
+	return
+}
