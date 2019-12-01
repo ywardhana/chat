@@ -2,7 +2,6 @@ package server
 
 import (
 	"net/http"
-	"sync"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/ywardhana/chat/app/system/middleware"
@@ -10,12 +9,6 @@ import (
 
 type Handler interface {
 	Register(r *httprouter.Router, m *middleware.Middleware)
-}
-
-type Ready struct {
-	cb     chan bool
-	status bool
-	mutex  sync.Mutex
 }
 
 func BuildServer(middleware *middleware.Middleware, handlers ...Handler) http.Handler {
