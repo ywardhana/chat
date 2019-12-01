@@ -7,6 +7,7 @@ import (
 type ChatUsecase interface {
 	CreateChat(message string) *model.Chat
 	IndexChat(param ChatIndexParam) ([]*model.Chat, error)
+	CountChat() int
 }
 
 type ChatIndexParam interface {
