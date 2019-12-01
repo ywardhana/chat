@@ -60,3 +60,7 @@ func (r *Chat) Get(config ChatRepoConfig) ([]*model.Chat, error) {
 
 	return r.chats[start:end], nil
 }
+
+func (r *Chat) Count() int {
+	return len(r.chats)
+}

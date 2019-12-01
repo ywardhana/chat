@@ -11,6 +11,20 @@ type ChatRepository struct {
 	mock.Mock
 }
 
+// Count provides a mock function with given fields:
+func (_m *ChatRepository) Count() int {
+	ret := _m.Called()
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
 // Get provides a mock function with given fields: config
 func (_m *ChatRepository) Get(config repository.ChatRepoConfig) ([]*model.Chat, error) {
 	ret := _m.Called(config)

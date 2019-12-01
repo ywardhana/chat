@@ -7,9 +7,10 @@ import (
 type ChatUsecase interface {
 	CreateChat(message string) *model.Chat
 	IndexChat(param ChatIndexParam) ([]*model.Chat, error)
+	CountChat() int
 }
 
-type ChatIndexParam struct {
-	Offset int
-	Limit  int
+type ChatIndexParam interface {
+	Limit() int
+	Offset() int
 }

@@ -142,3 +142,38 @@ func TestGet(t *testing.T) {
 		assert.Equal(t, err != nil, tt.expectedErr)
 	}
 }
+
+func TestCount(t *testing.T) {
+
+	tests := []struct {
+		chats       []*model.Chat
+		expectedLen int
+	}{
+		{
+			chats: []*model.Chat{
+				model.NewChat("halo", time.Now()),
+			},
+			expectedLen: 1,
+		},
+		{
+			chats: []*model.Chat{
+				model.NewChat("halo", time.Now()),
+				model.NewChat("check 1", time.Now()),
+				model.NewChat("check 2", time.Now()),
+				model.NewChat("check 3", time.Now()),
+			},
+			expectedLen: 4,
+		},
+	}
+
+	for _, tt := range tests {
+		chatRepo := repository.NewChatRepository()
+
+		for _, chat := range tt.chats {
+			chatRepo.Insert(chat)
+		}
+		count := chatRepo.Count()
+
+		assert.Equal(t, tt.expectedLen, count)
+	}
+}
