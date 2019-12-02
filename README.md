@@ -8,11 +8,14 @@
 ## API List
 Here is APIs that can be used to the app:
 
-### [POST] Create chat
+#### [POST] Create chat
 RESTFull API to send a chat. Will be available at `http://localhost:8001/chat`
 
-### [POST] Get all message
+#### [POST] Get all message
 RESTFull API to get all already sent chat. Will be available at `http://localhost:8001/chat`
 
-### [GET] Chat Websocket
+#### [GET] Chat Websocket
 Websocket API to interactively communicate with the app. You can connect to `ws://localhost:8001/websocket`, and send message to the connection which will be read as string.
+
+## Test and Coverage
+You can run `make test` to run Unit Testing of the app and know how much its coverage is
