@@ -25,5 +25,4 @@ func BuildServer(middleware *middleware.Middleware, handlers ...Handler) http.Ha
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
-
 }
