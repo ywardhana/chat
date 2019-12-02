@@ -19,4 +19,5 @@ func NewChatHandler(chatUC chat.ChatUsecase) *ChatHandler {
 func (h *ChatHandler) Register(router *httprouter.Router, m *middleware.Middleware) {
 	router.POST("/chat", m.AuthBasic(h.CreateChat))
 	router.GET("/chat", m.AuthBasic(h.IndexChat))
+	router.GET("/websocket", m.WebsocketServe(h.ChatWebsocket))
 }
