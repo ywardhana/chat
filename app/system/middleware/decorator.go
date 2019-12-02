@@ -4,7 +4,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
+	"github.com/pkg/errors"
 	"github.com/ywardhana/chat/errormessage"
 	"github.com/ywardhana/goapi/response"
 )
@@ -15,11 +17,15 @@ type Decorator struct {
 	failedHandler     http.Handler
 }
 
+type websocketError struct {
+	Message string `json:"message"`
+}
+
 func NewDecorator() *Decorator {
 	return &Decorator{
-		successHandler:    http.HandlerFunc(HandlePassed),
-		failedAuthHandler: http.HandlerFunc(HandleFailedAuth),
-		failedHandler:     http.HandlerFunc(HandleFailed),
+		successHandler:    http.HandlerFunc(handlePassed),
+		failedAuthHandler: http.HandlerFunc(handleFailedAuth),
+		failedHandler:     http.HandlerFunc(handleFailed),
 	}
 }
 
@@ -33,27 +39,45 @@ func (d *Decorator) ApplyDecorator(handler HandleWithError, auth Auth) httproute
 			d.failedAuthHandler.ServeHTTP(w, r)
 			return
 		}
-		err := handler(w, r, params)
-		if err != nil {
+		if err := handler(w, r, params); err != nil {
 			d.failedHandler.ServeHTTP(w, r)
 		}
 		d.successHandler.ServeHTTP(w, r)
 	}
 }
 
-func HandleFailedAuth(w http.ResponseWriter, r *http.Request) {
+func (d *Decorator) ApplyWebsocketDecorator(handler ConnWithError) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		upgrader := websocket.Upgrader{}
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+		if err := handler(conn); err != nil {
+			log.Println(err)
+			errMessage := websocketError{
+				Message: errors.Wrap(err, "error").Error(),
+			}
+			conn.WriteJSON(errMessage)
+		}
+	}
+}
+
+func handleFailedAuth(w http.ResponseWriter, r *http.Request) {
 	response.Error(w, errormessage.ErrorFailedAuth, http.StatusUnauthorized)
 	log.Println(r.URL.Query())
 	log.Output(1, errormessage.ErrorFailedAuth.Error()+"\n")
 }
 
-func HandlePassed(w http.ResponseWriter, r *http.Request) {
+func handlePassed(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.URL.Query())
 	log.Println(r.URL.RequestURI())
 	r.Context().Done()
 }
 
-func HandleFailed(w http.ResponseWriter, r *http.Request) {
+func handleFailed(w http.ResponseWriter, r *http.Request) {
 	response.Error(w, errormessage.ErrorUnexpected, http.StatusUnprocessableEntity)
 	log.Println(r.URL.Query())
 }
