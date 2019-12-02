@@ -8,8 +8,7 @@ const (
 )
 
 type createChatRequest struct {
-	Message       string `json:"message"`
-	InvoiceNumber string `json:"invoice_number"`
+	Message string `json:"message"`
 }
 
 type ChatIndexParam struct {
